@@ -15,9 +15,8 @@ class Tweet(db.Model):
     user_id = db.Column(UUID(as_uuid=True), db.ForeignKey('users.id', ondelete='CASCADE'), nullable=False, default = lambda: uuid4().hex)
     user = db.relationship('User', backref= db.backref('tweets', lazy='dynamic'))
 
-    def __init__(self,tweet,creation_date,user_id):
+    def __init__(self,tweet,user_id):
         self.tweet= tweet
-        self.creation_date = creation_date
         self.user_id= user_id
 
 class User(db.Model):
