@@ -9,23 +9,48 @@ tweet_schema = TweetSchema()
 tweets_schema = TweetSchema(many=True)
 
 
-class Tweets(Resource):
+class UserTweets(Resource):
     def get(self):
-        tweets = Tweets.query.all()
+        tweets = Tweet.query.all()
         tweets = tweets_schema.dump(tweets)
-        return {'status':'success','data':tweets}, 200
+        return {'tweets':tweets}, 200
 
-
-class Tweet(Resource):
-    def get(self,tweet_id):
+    
+class NewTweet(Resource):
+    def post(self):
         json_data = request.get_json(force= True)
-        if not json_data:
-            return {'message':'No input data provided'}
+        if not request.is_json:
+            return {'message':'Invalid request'}
+        new_tweet = json_data['tweet']
+        user_id = json_data['user_id']
 
-        first_name = json_data['first_name']
-        last_name = json_data['last_name']
-        username = json_data['username']
-        email = json_data['email']
-        password = json_data['password']
-        phone_number = json_data['phone_number']
-        tweet = Tweets.query.filter_by(id=tweet_id).first()
+        tweet = Tweet.query.filter_by(tweet=new_tweet).first()
+        if tweet:
+            return {'message':'tweet already exists'},409
+        tweet= Tweet(tweet= new_tweet,
+        user_id= user_id)
+
+        db.session.add(tweet)
+        db.session.commit()
+        result = tweet_schema.dump(tweet)
+
+        return {'status':'created','data': result},201
+        
+
+class UserTweet(Resource):
+    def post(self,tweet_id):
+        tweet = Tweet.query.get(tweet_id)
+        tweet = tweet_schema.dump(tweet)
+
+        if not tweet:
+            return {'status':'Not Found'},404
+
+        return {'status':'tweet created','data':tweet},201
+        
+
+
+tweets_api.add_resource(UserTweets,'/user/profile/tweets')
+tweets_api.add_resource(NewTweet,'/user/profile/new_tweet')
+tweets_api.add_resource(UserTweet,'/user/profile/tweet/<string:tweet_id>')
+
+
