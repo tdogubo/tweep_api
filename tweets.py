@@ -9,7 +9,7 @@ tweet_schema = TweetSchema()
 tweets_schema = TweetSchema(many=True)
 
 
-class UserTweets(Resource):
+class AllTweets(Resource):
     def get(self):
         tweets = Tweet.query.all()
         tweets = tweets_schema.dump(tweets)
@@ -40,16 +40,27 @@ class NewTweet(Resource):
 class UserTweet(Resource):
     def post(self,tweet_id):
         tweet = Tweet.query.get(tweet_id)
-        tweet = tweet_schema.dump(tweet)
+        result = tweet_schema.dump(tweet)
 
         if not tweet:
             return {'status':'Not Found'},404
 
-        return {'status':'tweet created','data':tweet},201
-        
+        return {'status':'success','data':result},200
+    
+    def delete(self,tweet_id):
+        tweet = Tweet.query.filter_by(id=tweet_id).first()
+        all_tweets = Tweet.query.all()
+        all_tweets= tweets_schema.dump(all_tweets)
+        if not request.is_json:
+            abort(400, "invalid format for tweet")
+        if not tweet:
+            abort(400, "Tweet not found")
+        db.session.delete(tweet)
+        db.session.commit()
+        return {'status':'sucessfully deleted','data':all_tweets}        
 
 
-tweets_api.add_resource(UserTweets,'/user/profile/tweets')
+tweets_api.add_resource(AllTweets,'/user/profile/tweets')
 tweets_api.add_resource(NewTweet,'/user/profile/new_tweet')
 tweets_api.add_resource(UserTweet,'/user/profile/tweet/<string:tweet_id>')
 
