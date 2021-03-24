@@ -13,6 +13,9 @@ def create_app(config_filename):
     from tweets import tweet_blueprint
     app.register_blueprint(tweet_blueprint)
 
+    from likes import likes_blueprint
+    app.register_blueprint(likes_blueprint)
+
     from auth import auth_blueprint
     app.register_blueprint(auth_blueprint)
 
