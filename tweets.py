@@ -9,9 +9,9 @@ tweet_schema = TweetSchema()
 tweets_schema = TweetSchema(many=True)
 
 
-class AllTweets(Resource):
-    def get(self):
-        tweets = Tweet.query.all()
+class AllUserTweets(Resource):
+    def get(self,user_id):
+        tweets = Tweet.query.filter_by(user_id=user_id)
         tweets = tweets_schema.dump(tweets)
         return {'tweets':tweets}, 200
 
@@ -60,7 +60,7 @@ class UserTweet(Resource):
         return {'status':'sucessfully deleted','data':all_tweets}        
 
 
-tweets_api.add_resource(AllTweets,'/user/profile/tweets')
+tweets_api.add_resource(AllUserTweets,'/user/<string:user_id>/tweets')
 tweets_api.add_resource(NewTweet,'/user/profile/new_tweet')
 tweets_api.add_resource(UserTweet,'/user/profile/tweet/<string:tweet_id>')
 

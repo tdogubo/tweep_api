@@ -12,12 +12,14 @@ class Tweet(db.Model):
     id = db.Column(UUID(as_uuid=True), primary_key = True,default = lambda: uuid4().hex)
     tweet = db.Column(db.String(500), nullable = False)
     creation_date = db.Column(db.TIMESTAMP, server_default= db.func.now(), nullable = False)
+    likes = db.Column(UUID(as_uuid=True),default=0)
     user_id = db.Column(UUID(as_uuid=True), db.ForeignKey('users.id', ondelete='CASCADE'), nullable=False, default = lambda: uuid4().hex)
     user = db.relationship('User', backref= db.backref('tweets', lazy='dynamic'))
 
-    def __init__(self,tweet,user_id):
+    def __init__(self,tweet,user_id,likes):
         self.tweet= tweet
         self.user_id= user_id
+        self.likes = likes
 
 class User(db.Model):
     __tablename__ = 'users'
@@ -29,7 +31,7 @@ class User(db.Model):
     email = db.Column(db.String(150),unique=True,nullable= False)
     phone_number = db.Column(db.String(14),nullable= False)
 
-    def __init__(self,username,first_name,last_name,password,email,phone_number) -> None:
+    def __init__(self,username,first_name,last_name,password,email,phone_number):
         self.username=username
         self.first_name=first_name
         self.last_name =last_name 
@@ -52,5 +54,6 @@ class UserSchema(ma.Schema):
 class TweetSchema(ma.Schema):
     id= fields.UUID(as_uuid=True)
     user_id=fields.UUID(required= True)
+    likes=fields.UUID(as_uuid= True)
     tweet= fields.String(required=True)
     creation_date = fields.DateTime()
