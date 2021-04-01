@@ -1,5 +1,5 @@
 from flask import Blueprint, request,abort
-from flask_restful import Resource, Api,request
+from flask_restful import Resource, Api
 from models import db,Tweet,TweetSchema
 
 tweet_blueprint = Blueprint('tweets',__name__)
