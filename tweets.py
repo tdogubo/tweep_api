@@ -34,7 +34,7 @@ class NewTweet(Resource):
         db.session.commit()
         result = tweet_schema.dump(tweet)
 
-        return {'status':'created','data': result},201
+        return {'message':'created','data': result},201
         
 
 class UserTweet(Resource):
@@ -43,9 +43,9 @@ class UserTweet(Resource):
         result = tweet_schema.dump(tweet)
 
         if not tweet:
-            return {'status':'Not Found'},404
+            return {'message':'Not Found'},404
 
-        return {'status':'success','data':result},200
+        return {'message':'success','data':result},200
     
     def delete(self,tweet_id):
         tweet = Tweet.query.filter_by(id=tweet_id).first()
@@ -57,7 +57,7 @@ class UserTweet(Resource):
             abort(400, "Tweet not found")
         db.session.delete(tweet)
         db.session.commit()
-        return {'status':'sucessfully deleted','data':all_tweets}        
+        return {'message':'sucessfully deleted','data':all_tweets}        
 
 
 tweets_api.add_resource(AllUserTweets,'/user/<string:user_id>/tweets')
