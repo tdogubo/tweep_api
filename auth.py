@@ -17,7 +17,7 @@ class AllUsers(Resource):
         if not users:
             return "empty"
         users = users_schema.dump(users)
-        return {'status':'success','data':users}, 200
+        return {'message':'success','data':users}, 200
 
 class Signup(Resource):
     def post(self):
@@ -51,7 +51,7 @@ class Signup(Resource):
 
         result = user_schema.dump(new_user)
 
-        return {'status':'success','data': result},201
+        return {'message':'success','data': result},201
 
 class Login(Resource):
     def post(self):
@@ -65,7 +65,7 @@ class Login(Resource):
             if not username or not check_password_hash(user.password, password):
                 return {'message':'Invalid username or password'},404
 
-            return {'status':'success'},200
+            return {'message':'success'},200
             
         except AttributeError:
             return {'message':'Invalid username or password'},404

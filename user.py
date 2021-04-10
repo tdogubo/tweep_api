@@ -20,7 +20,7 @@ class Profile(Resource):
         if not user:
             return {'message':'User not found'},404
 
-        return {'status':'Welcome '+ user.username,'data':result},200
+        return {'message':'Welcome '+ user.username,'data':result},200
 
 
     def put(self,user_id):
