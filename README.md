@@ -3,6 +3,6 @@
 Twitter API recreated using Flask.
 
 ## ENDPOINTS: 
-#### USERS:
-#### TWEETS:
-#### DIRECT MESSAGES {DM'S}:
+* USERS:
+* TWEETS:
+* DIRECT MESSAGES {DM'S}:
